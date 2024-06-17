@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import React, {useState} from 'react';
+import React, { useState } from "react";
 
 const Container = styled.div`
   display: flex;
@@ -78,25 +78,49 @@ const AddTransactionView = (props) => {
   const [amount, setAmount] = useState("");
   const [desc, setDesc] = useState("");
   const [type, setType] = useState("EXPENSE");
-  
+
   const addTransaction = () => {
     props.addTransaction({
       amount: Number(amount),
       desc,
       type,
-      id: Date.now()
+      id: Date.now(),
     });
     props.toggleAddTxn();
   };
 
   return (
     <AddTransactionContainer>
-      <input placeholder="Amount" type="number" value={amount} onChange={(e) => setAmount(e.target.value)} />
-      <input placeholder="Description (e.g., Groceries, Salary)" type="text" value={desc} onChange={(e) => setDesc(e.target.value)} />
+      <input
+        placeholder="Amount"
+        type="number"
+        value={amount}
+        onChange={(e) => setAmount(e.target.value)}
+      />
+      <input
+        placeholder="Description (e.g., Groceries, Salary)"
+        type="text"
+        value={desc}
+        onChange={(e) => setDesc(e.target.value)}
+      />
       <RadioBox>
-        <input type="radio" id="expense" name="type" value="EXPENSE" checked={type === "EXPENSE"} onChange={(e) => setType(e.target.value)} />
+        <input
+          type="radio"
+          id="expense"
+          name="type"
+          value="EXPENSE"
+          checked={type === "EXPENSE"}
+          onChange={(e) => setType(e.target.value)}
+        />
         <label htmlFor="expense">Expense</label>
-        <input type="radio" id="income" name="type" value="INCOME" checked={type === "INCOME"} onChange={(e) => setType(e.target.value)} />
+        <input
+          type="radio"
+          id="income"
+          name="type"
+          value="INCOME"
+          checked={type === "INCOME"}
+          onChange={(e) => setType(e.target.value)}
+        />
         <label htmlFor="income">Income</label>
       </RadioBox>
       <AddTransaction onClick={addTransaction}>Add Transaction</AddTransaction>
@@ -106,17 +130,19 @@ const AddTransactionView = (props) => {
 
 const OverviewComponent = (props) => {
   const [isAddTxnVisible, toggleAddTxn] = useState(false);
-  
+
   return (
     <Container>
       <BalanceBox>
         Balance: ${props.income - props.expense}
-        <AddTransaction onClick={() => toggleAddTxn(!isAddTxnVisible)}>{isAddTxnVisible ? "Cancel" : "ADD"}</AddTransaction>
+        <AddTransaction onClick={() => toggleAddTxn(!isAddTxnVisible)}>
+          {isAddTxnVisible ? "Cancel" : "ADD"}
+        </AddTransaction>
       </BalanceBox>
       {isAddTxnVisible && (
-        <AddTransactionView 
-          toggleAddTxn={toggleAddTxn} 
-          addTransaction={props.addTransaction} 
+        <AddTransactionView
+          toggleAddTxn={toggleAddTxn}
+          addTransaction={props.addTransaction}
         />
       )}
       <ExpenseContainer>

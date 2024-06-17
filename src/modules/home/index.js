@@ -12,26 +12,44 @@ const Container = styled.div`
   font-family: Montserrat;
 `;
 
-const HomeComponent = (props) => {
+const HomeComponent = () => {
   const [transaction, updateTransaction] = useState([]);
   const [expense, updateExpense] = useState(0);
   const [income, updateIncome] = useState(0);
 
+  // Load transactions from local storage on component mount
+  useEffect(() => {
+    const storedTransactions = localStorage.getItem("transactions");
+    if (storedTransactions) {
+      const parsedTransactions = JSON.parse(storedTransactions);
+      updateTransaction(parsedTransactions);
+      calculateBalance(parsedTransactions);
+    }
+  }, []);
+
+  // Save transactions to local storage whenever they change
+  useEffect(() => {
+    if (transaction.length > 0) {
+      localStorage.setItem("transactions", JSON.stringify(transaction));
+    }
+  }, [transaction]);
+
   const addTransaction = (payload) => {
-    const transactionArray = [...transaction];
-    transactionArray.push(payload);
+    const transactionArray = [...transaction, payload];
     updateTransaction(transactionArray);
+    calculateBalance(transactionArray);
   };
 
   const deleteTransaction = (id) => {
-    const updatedTransactions = transaction.filter(txn => txn.id !== id);
+    const updatedTransactions = transaction.filter((txn) => txn.id !== id);
     updateTransaction(updatedTransactions);
+    calculateBalance(updatedTransactions);
   };
 
-  const calculateBalance = () => {
+  const calculateBalance = (transactions) => {
     let expense = 0;
     let income = 0;
-    transaction.forEach((payload) => {
+    transactions.forEach((payload) => {
       payload.type === "EXPENSE"
         ? (expense += payload.amount)
         : (income += payload.amount);
@@ -40,8 +58,6 @@ const HomeComponent = (props) => {
     updateIncome(income);
   };
 
-  useEffect(() => calculateBalance(), [transaction]);
-
   return (
     <Container>
       <OverviewComponent
@@ -49,7 +65,10 @@ const HomeComponent = (props) => {
         expense={expense}
         income={income}
       />
-      <TransactionComponent transaction={transaction} deleteTransaction={deleteTransaction} />
+      <TransactionComponent
+        transaction={transaction}
+        deleteTransaction={deleteTransaction}
+      />
     </Container>
   );
 };

@@ -17,7 +17,7 @@ const Container = styled.div`
     background: #e6e8e9;
     border: 1px solid #e6e8e9;
     outline: none;
-    width: 88%;
+    width: 97%;
   }
 `;
 
@@ -52,7 +52,9 @@ const TransactionCell = ({ payload, deleteTransaction }) => {
     <Cell isExpense={payload.type === "EXPENSE"}>
       <span>{payload.desc}</span>
       <span>${payload.amount}</span>
-      <DeleteButton onClick={() => deleteTransaction(payload.id)}>Delete</DeleteButton>
+      <DeleteButton onClick={() => deleteTransaction(payload.id)}>
+        Delete
+      </DeleteButton>
     </Cell>
   );
 };
@@ -81,22 +83,15 @@ const TransactionComponent = ({ transaction, deleteTransaction }) => {
       <input
         placeholder="Search"
         value={searchText}
-        onChange={(e) => {
-          updateSearchText(e.target.value);
-          filterData(e.target.value);
-        }}
+        onChange={(e) => updateSearchText(e.target.value)}
       />
-      {filteredTransaction.length ? (
-        filteredTransaction.map((payload) => (
-          <TransactionCell
-            key={payload.id}
-            payload={payload}
-            deleteTransaction={deleteTransaction}
-          />
-        ))
-      ) : (
-        <div>No transactions found</div>
-      )}
+      {filteredTransaction?.map((payload) => (
+        <TransactionCell
+          key={payload.id}
+          payload={payload}
+          deleteTransaction={deleteTransaction}
+        />
+      ))}
     </Container>
   );
 };
